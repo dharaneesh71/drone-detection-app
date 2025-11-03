@@ -1,24 +1,67 @@
 # Dependencies
 node_modules/
-__pycache__/
-*.py[cod]
+client/node_modules/
+server/node_modules/
 
 # Environment variables
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+server/.env
+client/.env
 
-# Uploads and outputs
+# Build files
+client/build/
+build/
+dist/
+
+# Uploads and outputs (large files)
 uploads/
 outputs/
+server/uploads/
+server/outputs/
+logs/
+server/logs/
 
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Python virtual environment
+venv/
+env/
+ENV/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 
 # OS files
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Model files (can be large)
+*.pt
+*.pth
+best.pt
+server/best.pt
+
+# Temporary files
+*.tmp
+*.temp
+
+# JSON secrets
+client_secret.json
+server/client_secret.json
