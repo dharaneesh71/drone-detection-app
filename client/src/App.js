@@ -4,10 +4,6 @@ import { BrowserRouter as Router, Routes, Route, Link, Navigate, useNavigate } f
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
-// API Configuration
-const API_BASE_URL = 'https://drone-detection-app-177.onrender.com';
-
-
 // Consolidated MUI component imports
 import {
   AppBar, Toolbar, Typography, Container, Paper, Slider,
@@ -40,6 +36,9 @@ import {
   Search as SearchIcon,
   VerifiedUser as VerifiedUserIcon
 } from '@mui/icons-material';
+
+// API Configuration
+const API_BASE_URL = 'https://drone-detection-app-177.onrender.com';
 
 // Define theme with custom colors
 const darkTheme = createTheme({
