@@ -147,6 +147,8 @@ function Login({ setIsAuthenticated, setUser }) {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Replace your handleLogin function with this version:
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -160,6 +162,8 @@ function Login({ setIsAuthenticated, setUser }) {
 
     try {
       if (username === "dharaneesh" && password === "1234") {
+        console.log('Attempting to request OTP...'); // Debug log
+        
         const response = await fetch('https://drone-detection-app-177.onrender.com/api/request-otp', {
           method: 'POST',
           headers: {
@@ -168,7 +172,14 @@ function Login({ setIsAuthenticated, setUser }) {
           body: JSON.stringify({ username }),
         });
 
+        console.log('Response status:', response.status); // Debug log
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
+        console.log('Response data:', data); // Debug log
 
         if (data.success) {
           const expiryTime = new Date(data.expiresAt);
@@ -177,8 +188,8 @@ function Login({ setIsAuthenticated, setUser }) {
 
           setCountdown(secondsRemaining);
           setOtpExpiry(data.expiresAt);
-          setDemoMode(data.demoMode || false); // NEW: Check if in demo mode
-          setDemoOTP(data.demoOTP || null); // NEW: Store demo OTP if available
+          setDemoMode(data.demoMode || false);
+          setDemoOTP(data.demoOTP || null);
           setShowOtpModal(true);
         } else {
           setError(data.error || 'Failed to send OTP. Please try again.');
@@ -188,7 +199,7 @@ function Login({ setIsAuthenticated, setUser }) {
       }
     } catch (err) {
       console.error('Login error:', err);
-      setError('An error occurred. Please try again.');
+      setError(`Connection error: ${err.message}. Please check if backend is running.`);
     } finally {
       setLoading(false);
     }
