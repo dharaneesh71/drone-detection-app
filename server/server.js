@@ -33,14 +33,18 @@ const port = process.env.PORT || 5000;
 // Middleware
 app.use(cors({
   origin: [
-    'http://localhost:3000', // for local development
-    'https://drone-detection-app-1.onrender.com', // YOUR ACTUAL FRONTEND URL
-    'https://drone-detection-app-177.onrender.com' // backend URL (for safety)
+    'http://localhost:3000',
+    'https://drone-detection-app-1.onrender.com', // YOUR FRONTEND URL
+    'https://drone-detection-app-177.onrender.com' // YOUR BACKEND URL
   ],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+app.options('*', cors()); // Enable preflight
 app.use(express.json());
 app.use('/outputs', express.static(path.join(__dirname, 'outputs')));
+
 
 // ==== Helper function to update .env ====
 function updateEnvVar(key, value) {
@@ -70,6 +74,21 @@ function updateEnvVar(key, value) {
 // --- OAuth configuration (only used when not in DEMO_MODE)
 const scopes = ['https://mail.google.com/'];
 const redirectUri = 'http://localhost:5000/auth/google/callback';
+
+app.get('/', (req, res) => {
+  res.json({
+    status: 'Backend is running',
+    demoMode: DEMO_MODE,
+    endpoints: {
+      test: '/api/test',
+      debug: '/api/debug/env',
+      requestOtp: '/api/request-otp (POST)',
+      verifyOtp: '/api/verify-otp (POST)',
+      detectImage: '/api/detect-image (POST)',
+      detectVideo: '/api/detect-video (POST)'
+    }
+  });
+});
 
 // ==== OAuth routes (for email configuration) ====
 app.get('/auth/google', (req, res) => {
