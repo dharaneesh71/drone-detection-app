@@ -160,7 +160,7 @@ function Login({ setIsAuthenticated, setUser }) {
 
     try {
       if (username === "dharaneesh" && password === "1234") {
-        const response = await fetch('http://localhost:5000/api/request-otp', {
+        const response = await fetch('https://drone-detection-app-177.onrender.com/api/request-otp', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -204,7 +204,7 @@ function Login({ setIsAuthenticated, setUser }) {
     setOtpError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/verify-otp', {
+      const response = await fetch('https://drone-detection-app-177.onrender.com/api/verify-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -246,7 +246,7 @@ function Login({ setIsAuthenticated, setUser }) {
     setOtpError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/request-otp', {
+      const response = await fetch('https://drone-detection-app-177.onrender.com/api/request-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -837,7 +837,7 @@ function ImageDetection({ confidence, addToLog }) {
       formData.append('image', selectedFile);
       formData.append('confidence', confidence);
 
-      const response = await fetch('http://localhost:5000/api/detect-image', {
+      const response = await fetch('https://drone-detection-app-177.onrender.com/api/detect-image', {
         method: 'POST',
         body: formData, // Don't set Content-Type header, browser will set it with boundary
       });
@@ -846,7 +846,7 @@ function ImageDetection({ confidence, addToLog }) {
 
       if (data.success) {
         // Properly handle the image URL from the server
-        setResult(`http://localhost:5000${data.outputPath}`);
+        setResult(`https://drone-detection-app-177.onrender.com${data.outputPath}`);
         setAlertSent(data.droneDetected);
 
         if (data.droneDetected) {
@@ -1105,7 +1105,7 @@ function VideoDetection({ confidence, addToLog }) {
       formData.append('video', selectedFile);
       formData.append('confidence', confidence);
 
-      const response = await fetch('http://localhost:5000/api/detect-video', {
+      const response = await fetch('https://drone-detection-app-177.onrender.com/api/detect-video', {
         method: 'POST',
         body: formData, // Don't set Content-Type header, browser will set it with boundary
       });
@@ -1116,7 +1116,7 @@ function VideoDetection({ confidence, addToLog }) {
         // Set progress to 100% when complete
         setProgress(100);
         // Properly handle the video URL from the server
-        setProcessedVideo(`http://localhost:5000${data.outputPath}`);
+        setProcessedVideo(`https://drone-detection-app-177.onrender.com${data.outputPath}`);
         setDroneDetected(data.droneDetected);
 
         if (data.droneDetected) {
@@ -1138,7 +1138,7 @@ function VideoDetection({ confidence, addToLog }) {
     if (!processedVideo) return;
 
     const fileName = processedVideo.split('/').pop();
-    const downloadUrl = `http://localhost:5000/download/${fileName}`;
+    const downloadUrl = `https://drone-detection-app-177.onrender.com/download/${fileName}`;
 
     // Create a temporary anchor element
     const link = document.createElement('a');
