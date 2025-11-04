@@ -38,7 +38,7 @@ import {
 } from '@mui/icons-material';
 
 // API Configuration
-const API_BASE_URL = 'https://drone-detection-app-177.onrender.com';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://drone-detection-app-177.onrender.com';
 
 // Define theme with custom colors
 const darkTheme = createTheme({
