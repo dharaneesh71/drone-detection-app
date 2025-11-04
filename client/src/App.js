@@ -4,7 +4,8 @@ import { BrowserRouter as Router, Routes, Route, Link, Navigate, useNavigate } f
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
-
+// API Configuration
+const API_BASE_URL = 'https://drone-detection-app-177.onrender.com';
 
 
 // Consolidated MUI component imports
@@ -848,7 +849,7 @@ function ImageDetection({ confidence, addToLog }) {
       formData.append('image', selectedFile);
       formData.append('confidence', confidence);
 
-      const response = await fetch('https://drone-detection-app-177.onrender.com/api/detect-image', {
+      const response = await fetch(`${API_BASE_URL}/api/detect-image`, {
         method: 'POST',
         body: formData, // Don't set Content-Type header, browser will set it with boundary
       });
@@ -857,7 +858,7 @@ function ImageDetection({ confidence, addToLog }) {
 
       if (data.success) {
         // Properly handle the image URL from the server
-        setResult(`https://drone-detection-app-177.onrender.com${data.outputPath}`);
+        setResult(`${API_BASE_URL}${data.outputPath}`);
         setAlertSent(data.droneDetected);
 
         if (data.droneDetected) {
@@ -1116,7 +1117,7 @@ function VideoDetection({ confidence, addToLog }) {
       formData.append('video', selectedFile);
       formData.append('confidence', confidence);
 
-      const response = await fetch('https://drone-detection-app-177.onrender.com/api/detect-video', {
+      const response = await fetch(`${API_BASE_URL}/api/detect-video`, {
         method: 'POST',
         body: formData, // Don't set Content-Type header, browser will set it with boundary
       });
@@ -1127,7 +1128,7 @@ function VideoDetection({ confidence, addToLog }) {
         // Set progress to 100% when complete
         setProgress(100);
         // Properly handle the video URL from the server
-        setProcessedVideo(`https://drone-detection-app-177.onrender.com${data.outputPath}`);
+        setProcessedVideo(`${API_BASE_URL}${data.outputPath}`);
         setDroneDetected(data.droneDetected);
 
         if (data.droneDetected) {
@@ -1149,7 +1150,7 @@ function VideoDetection({ confidence, addToLog }) {
     if (!processedVideo) return;
 
     const fileName = processedVideo.split('/').pop();
-    const downloadUrl = `https://drone-detection-app-177.onrender.com/download/${fileName}`;
+    const downloadUrl = `${API_BASE_URL}/download/${fileName}`;
 
     // Create a temporary anchor element
     const link = document.createElement('a');
