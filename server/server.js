@@ -34,7 +34,8 @@ const port = process.env.PORT || 5000;
 app.use(cors({
   origin: [
     'http://localhost:3000', // for local development
-    'https://drone-detection-app-177.onrender.com' // your actual frontend URL
+    'https://drone-detection-app-1.onrender.com', // YOUR ACTUAL FRONTEND URL
+    'https://drone-detection-app-177.onrender.com' // backend URL (for safety)
   ],
   credentials: true
 }));
