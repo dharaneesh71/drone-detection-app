@@ -1,4 +1,4 @@
-// server.js
+// server.js - COMPLETE FILE WITH CORS FIX
 const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
@@ -19,7 +19,7 @@ const DEMO_OTP = '123456'; // Fixed OTP for demo mode
 
 if (DEMO_MODE) {
   console.log('\n⚠️  RUNNING IN DEMO MODE - Email functionality disabled');
-  console.log(`📌 Use OTP: ${DEMO_OTP} for authentication\n`);
+  console.log(`🔐 Use OTP: ${DEMO_OTP} for authentication\n`);
 } else {
   console.log('\n✅ Email configuration detected - Full functionality enabled\n');
 }
@@ -30,21 +30,37 @@ const ENV_PATH = envPath;
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors({
+// ==========================================
+// 🔧 CRITICAL: CORS CONFIGURATION MUST BE FIRST
+// ==========================================
+const corsOptions = {
   origin: [
     'http://localhost:3000',
-    'https://drone-detection-app-1.onrender.com', // YOUR FRONTEND URL
-    'https://drone-detection-app-177.onrender.com' // YOUR BACKEND URL
+    'https://drone-detection-app-1.onrender.com',
+    'https://drone-detection-app-177.onrender.com'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-app.options('*', cors()); // Enable preflight
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  optionsSuccessStatus: 200
+};
+
+// Apply CORS middleware FIRST
+app.use(cors(corsOptions));
+
+// Handle preflight OPTIONS requests
+app.options('*', cors(corsOptions));
+
+// THEN other middleware
 app.use(express.json());
 app.use('/outputs', express.static(path.join(__dirname, 'outputs')));
 
+// Logging middleware for debugging
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  console.log('Origin:', req.headers.origin);
+  next();
+});
 
 // ==== Helper function to update .env ====
 function updateEnvVar(key, value) {
@@ -75,6 +91,7 @@ function updateEnvVar(key, value) {
 const scopes = ['https://mail.google.com/'];
 const redirectUri = 'http://localhost:5000/auth/google/callback';
 
+// ==== Root route ====
 app.get('/', (req, res) => {
   res.json({
     status: 'Backend is running',
@@ -624,7 +641,7 @@ app.listen(port, () => {
   
   if (DEMO_MODE) {
     console.log(`\n⚠️  DEMO MODE ACTIVE`);
-    console.log(`📌 Use OTP: ${DEMO_OTP} for authentication`);
+    console.log(`🔐 Use OTP: ${DEMO_OTP} for authentication`);
     console.log(`\n📧 To enable email functionality:`);
     console.log(`   1. Add credentials to .env file`);
     console.log(`   2. Visit: http://localhost:${port}/auth/google`);
