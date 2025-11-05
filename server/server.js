@@ -473,9 +473,14 @@ app.post('/api/verify-otp', (req, res) => {
   });
 });
 
+// Replace ONLY the Image detection endpoint in your server.js:
+
 // Image detection endpoint
 app.post('/api/detect-image', upload.single('image'), async (req, res) => {
   console.log('Image detection request received');
+  console.log('File:', req.file ? req.file.filename : 'No file');
+  console.log('Origin:', req.headers.origin);
+  
   if (!req.file) {
     return res.status(400).json({ success: false, error: "No file uploaded" });
   }
@@ -493,7 +498,11 @@ app.post('/api/detect-image', upload.single('image'), async (req, res) => {
   const pythonScriptPath = path.join(__dirname, 'detect.py');
 
   try {
-    const pythonProcess = spawn('py', [
+    // CRITICAL FIX: Use correct Python command for the platform
+    const pythonCommand = process.platform === 'win32' ? 'py' : 'python3';
+    console.log('Using Python command:', pythonCommand);
+    
+    const pythonProcess = spawn(pythonCommand, [
       pythonScriptPath,
       '--input', inputPath,
       '--output', outputPath,
@@ -505,15 +514,19 @@ app.post('/api/detect-image', upload.single('image'), async (req, res) => {
 
     pythonProcess.stdout.on('data', (data) => {
       stdoutData += data.toString();
+      console.log('Python stdout:', data.toString());
     });
 
     pythonProcess.stderr.on('data', (data) => {
       stderrData += data.toString();
+      console.error('Python stderr:', data.toString());
     });
 
     const exitCode = await new Promise((resolve) => {
       pythonProcess.on('close', resolve);
     });
+
+    console.log('Python process exited with code:', exitCode);
 
     if (exitCode === 0 && fs.existsSync(outputPath)) {
       const droneDetected = stdoutData.includes("drone") || stdoutData.includes("Found");
@@ -529,13 +542,16 @@ app.post('/api/detect-image', upload.single('image'), async (req, res) => {
         demoMode: DEMO_MODE
       });
     } else {
+      console.error('Detection failed:', stderrData);
       res.status(500).json({
         success: false,
         error: "Processing failed",
-        pythonError: stderrData
+        pythonError: stderrData || 'Unknown error',
+        exitCode: exitCode
       });
     }
   } catch (error) {
+    console.error('Detection error:', error);
     res.status(500).json({
       success: false,
       error: error.message
@@ -546,6 +562,9 @@ app.post('/api/detect-image', upload.single('image'), async (req, res) => {
 // Video detection endpoint
 app.post('/api/detect-video', upload.single('video'), async (req, res) => {
   console.log('Video detection request received');
+  console.log('File:', req.file ? req.file.filename : 'No file');
+  console.log('Origin:', req.headers.origin);
+  
   if (!req.file) {
     return res.status(400).json({ success: false, error: "No file uploaded" });
   }
@@ -563,7 +582,11 @@ app.post('/api/detect-video', upload.single('video'), async (req, res) => {
   const pythonScriptPath = path.join(__dirname, 'detect_video.py');
 
   try {
-    const pythonProcess = spawn('py', [
+    // CRITICAL FIX: Use correct Python command for the platform
+    const pythonCommand = process.platform === 'win32' ? 'py' : 'python3';
+    console.log('Using Python command:', pythonCommand);
+    
+    const pythonProcess = spawn(pythonCommand, [
       pythonScriptPath,
       '--input', inputPath,
       '--output', outputPath,
@@ -575,15 +598,19 @@ app.post('/api/detect-video', upload.single('video'), async (req, res) => {
 
     pythonProcess.stdout.on('data', (data) => {
       stdoutData += data.toString();
+      console.log('Python stdout:', data.toString());
     });
 
     pythonProcess.stderr.on('data', (data) => {
       stderrData += data.toString();
+      console.error('Python stderr:', data.toString());
     });
 
     const exitCode = await new Promise((resolve) => {
       pythonProcess.on('close', resolve);
     });
+
+    console.log('Python process exited with code:', exitCode);
 
     if (exitCode === 0 && fs.existsSync(outputPath)) {
       const droneDetected = stdoutData.includes("Drone detected: True") || stdoutData.includes("Found");
@@ -599,13 +626,16 @@ app.post('/api/detect-video', upload.single('video'), async (req, res) => {
         demoMode: DEMO_MODE
       });
     } else {
+      console.error('Detection failed:', stderrData);
       res.status(500).json({
         success: false,
         error: "Processing failed",
-        pythonError: stderrData
+        pythonError: stderrData || 'Unknown error',
+        exitCode: exitCode
       });
     }
   } catch (error) {
+    console.error('Detection error:', error);
     res.status(500).json({
       success: false,
       error: error.message
