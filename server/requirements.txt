@@ -1,8 +1,8 @@
 # Core Computer Vision
-opencv-python>=4.8.0
+opencv-python-headless>=4.8.0
 numpy>=1.24.0
 
-# Deep Learning Framework
+# Deep Learning Framework (CPU version for faster build)
 torch>=2.0.0
 torchvision>=0.15.0
 
@@ -18,8 +18,3 @@ matplotlib>=3.7.0
 
 # For argument parsing in Python scripts
 argparse
-
-# Optional: For GPU support with CUDA 11.8 (uncomment if you have NVIDIA GPU)
-# Install these instead of the CPU versions above:
-# torch==2.0.0+cu118 --index-url https://download.pytorch.org/whl/cu118
-# torchvision==0.15.0+cu118 --index-url https://download.pytorch.org/whl/cu118
